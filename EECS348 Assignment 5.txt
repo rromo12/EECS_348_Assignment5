@@ -1,0 +1,9 @@
+EECS 348 Assignment 5
+CHECK FAQ 
+
+Other Features:
+Bounding Box Area
+Bounding Box height/width ratio
+Drawing Speed(Max Min Avg)
+Distance from Side of Sketch
+Proximity to Nearest Neighbors
