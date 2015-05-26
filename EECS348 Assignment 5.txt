@@ -7,6 +7,3 @@ Bounding Box height/width ratio
 Drawing Speed(Max Min Avg)
 Distance from Side of Sketch
 Proximity to Nearest Neighbors
-
-
-Test
