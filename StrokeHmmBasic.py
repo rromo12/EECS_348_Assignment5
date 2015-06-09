@@ -1,13 +1,10 @@
 # Name: Rene Romo(rgr355) Tessa Haldes(tah210) Camille Warren (cew361)
 # Date:6/4/15
-
-from __future__ import division
 import xml.dom.minidom
 import copy
 import guid
 import math
 import os
-
 
 # A couple contants
 CONTINUOUS = 0
@@ -209,9 +206,9 @@ class StrokeLabeler:
         #    name to whether it is continuous or discrete
         # numFVals is a dictionary specifying the number of legal values for
         #    each discrete feature
-        self.featureNames = ['length', 'hwratio', 'area']
-        self.contOrDisc = {'length': DISCRETE, 'hwratio' : DISCRETE, 'area' : DISCRETE}
-        self.numFVals = { 'length': 2, 'hwratio': 2, 'area' : 2}
+        self.featureNames = ['length']
+        self.contOrDisc = {'length': DISCRETE}
+        self.numFVals = { 'length': 2}
 
     def featurefy( self, strokes ):
         ''' Converts the list of strokes into a list of feature dictionaries
@@ -249,17 +246,7 @@ class StrokeLabeler:
             # you also need to add them to the three member data structures
             # above in the contructor: self.featureNames, self.contOrDisc,
             #    self.numFVals (for discrete features only)
-            hwrat=s.hwratio()
-            if hwrat  < 0.3:
-                d['hwratio'] = 0
-            else:
-                d['hwratio'] = 1
 
-            a=s.area()
-            if a  < 92000:
-                d['area'] = 0
-            else:
-                d['area'] = 1
             ret.append(d)  # append the feature dictionary to the list
             
         return ret
@@ -524,6 +511,7 @@ class StrokeLabeler:
 
         return {'drawing':{'drawing':drawing_correct,'text':drawing_incorrect},'text':{'drawing':text_incorrect,'text':text_correct}}
 
+
     def testHMMDir(self,trainingDir):
         ''' tests the HMM on all the files in a training directory '''
         rdict = {'drawing':{'drawing':0,'text':0},'text':{'drawing':0,'text':0}}
@@ -533,6 +521,7 @@ class StrokeLabeler:
         for files in lFileList:
             strokes, truelabels = self.loadLabeledFile(trainingDir+files)
             confmat = self.confusion(truelabels, x.labelStrokes(strokes))
+            print confmat
             rdict['drawing']['drawing'] += confmat['drawing']['drawing']
             rdict['drawing']['text'] += confmat['drawing']['text']
             rdict['text']['drawing'] += confmat['text']['drawing']
@@ -559,6 +548,7 @@ class Stroke:
         ''' Set the points for the stroke '''
         self.points = points
 
+
     # Feature functions follow this line
     def length( self ):
         ''' Returns the length of the stroke '''
@@ -571,6 +561,8 @@ class Stroke:
             ret += math.sqrt(xdiff**2 + ydiff**2)
             prev = p
         return ret
+
+
 
     def sumOfCurvature(self, func=lambda x: x, skip=1):
         ''' Return the normalized sum of curvature for a stroke.
@@ -621,40 +613,7 @@ class Stroke:
         return ret / len(self.points)
 
     # You can (and should) define more features here
-    def hwratio( self ):
-        ''' Returns the length of the stroke '''
-        xmax = 0 
-        xmin = 0
-        ymax = 0
-        ymin = 0
-        ret = 0
-        prev = self.points[0]
-        for p in self.points[1:]:
-            ymax = max(p[1], prev[1])
-            ymin = min(p[1], prev[1])
-            xmax = max(p[0], prev[0])
-            xmin = min(p[0], prev[0])
-            prev = p
-        if ((xmax - xmin) != 0):
-            ret = (ymax - ymin)/(xmax-xmin)
-        return ret
 
-    def area( self ):
-        ''' Returns the length of the stroke '''
-        xmax = 0 
-        xmin = 0
-        ymax = 0
-        ymin = 0
-        ret = 0
-        prev = self.points[0]
-        for p in self.points[1:]:
-            ymax = max(p[1], prev[1])
-            ymin = min(p[1], prev[1])
-            xmax = max(p[0], prev[0])
-            xmin = min(p[0], prev[0])
-            prev = p
-            ret = (ymax - ymin)*(xmax-xmin)
-        return ret
 
 
 # Examples
